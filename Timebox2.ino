@@ -135,21 +135,23 @@ void loop() {
   if (digitalRead(port_button_one_min) == LOW) {
       speaker(1);
       nCounterButton += 1;
+      nCounterMinutes = 0;
+      servoInstantOpen();
       Serial.println("Button 1 min pressed, Counter:");
       Serial.println(nCounterButton);
       Alarm.delay(1000);
       Serial.println("Button wieder frei");
-      //servoOpen();
    }
 
    if (digitalRead(port_button_five_min) == LOW) {
       speaker(5);
       nCounterButton += 5;
+      nCounterMinutes = 0;
+      servoInstantOpen();
       Serial.println("Button 5 min pressed, Counter:");
       Serial.println(nCounterButton);
       Alarm.delay(1000);
       Serial.println("Button wieder frei");
-      //servoClose ();
    }
 
    Alarm.delay(0);
@@ -163,6 +165,10 @@ void minuteLoop () {
 
  if (nCounterButton > 0 && nCounterButton == nCounterMinutes) {
   servoClose();
+  nCounterButton = 0;
+  nCounterMinutes = 0;
+  
+  takeOnMe();
  }
 }
 
@@ -172,17 +178,24 @@ void servoOpen () {
     servo.write(i);
     Alarm.delay(20);
   }
-  
+}
+
+void servoInstantOpen () {
+  Serial.println("servoInstantOpen");
+  servo.write(110);
 }
 
 void servoClose () {
   Serial.println("servoClose");
    for (int i=110; i>=50;i--) {
     servo.write(i);
-    Alarm.delay(10);
+    Alarm.delay(1);
   }
+}
 
-   takeOnMe();
+void servoInstantClose () {
+  Serial.println("servoInstantClose");
+  servo.write(50);
 }
 
 void takeOnMe() {
